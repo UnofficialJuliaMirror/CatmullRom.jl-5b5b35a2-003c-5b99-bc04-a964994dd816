@@ -46,14 +46,17 @@ end
 
 isclosed(firstpoint::P, lastpoint::P) where P = firstpoint == lastpoint
 isclosed(points::P) where P = isclosed(first(points), last(points))
+isclosed(points::NT) where NT<:NamedTuple = isclosed(Tuple(points[1]), Tuple(points[end]))
+
 
 isapproxclosed(points::P) where P = isapproxclosed(first(points), last(points))
-
 function isapproxclosed(firstpoint::P, lastpoint::P) where P
     nrm1 = norm(sqrt(eps(norm(firstpoint))), sqrt(eps(norm(lastpoint))))
     nrm2 = norm(firstpoint .- lastpoint)
     return nrm1 >= nrm2
 end
+isapproxclosed(points::NT) where {NT<:NamedTuple} =
+    isapproxclosed(Tuple.(points))
 
 npoints(pts::P) where P = length(pts)
 npoints(pts::Base.Iterators.Zip) = length(pts)
